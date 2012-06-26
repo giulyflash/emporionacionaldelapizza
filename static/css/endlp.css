@@ -1,0 +1,16 @@
+.endlp_caja{
+float: left;
+padding: 20px 20px 20px 20px;
+margin:  20px 0px 20px 20px;
+background-color: #ffffaa;
+font-weight: bold;
+}
+
+.endlp_cuadro{
+float: left;
+/*padding: 20px 20px 20px 20px;*/
+margin:  20px 20px 20px 20px;
+/*background-color: #ffffaa;*/
+font-weight: bold;
+display: inline;
+}

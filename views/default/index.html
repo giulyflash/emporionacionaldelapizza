@@ -1,0 +1,32 @@
+{{left_sidebar_enabled=right_sidebar_enabled=False}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+
+<script type="text/javascript">
+$("document").ready(function(){
+$("#tabs").tabs();
+});
+</script>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">¡Bienvenidos!</a></li>
+    </ul>
+    <div id="tabs-1">
+        <h3>Emporio Nacional de la Pizza</h3>
+        <p><em>Emporio Nacional de la Pizza</em> es una interfaz web de <a href="http://sites.google.com/site/hexa662">hexa662</a> para gestión de pedidos online y envíos para pizzerías. Esta es una aplicación para demostración de la interfaz. Para implementaciones específicas y modificaciones puede puede comunicarse por medio del siguiente <a href="http://sites.google.com/site/hexa662/contacto-comercial">formulario de contacto</a>. Usted puede probar la interfaz web realizando una simulación de pedidos a través del menú en la sección "nuevo pedido". Para acceder al menú de pedidos online haga clic en el link en la parte superior del documento. Para más información puede consultar las instrucciones en la sección de <a href="{{=URL('ayuda')}}">ayuda</a></p>
+    </div>
+    <ul>
+      <li>{{=A(B("Aplicación administrativa (usuario administrador)"), _href=URL('admin','default','index'))}}</li>
+    </ul>
+
+</div>
+
+
+{{else:}}
+{{=BEAUTIFY(response._vars)}}
+{{pass}}
+
+{{block left_sidebar}}New Left Sidebar Content{{end}}
+{{block right_sidebar}}New Right Sidebar Content{{end}}

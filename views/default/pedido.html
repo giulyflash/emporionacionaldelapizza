@@ -1,0 +1,112 @@
+{{extend 'layout.html'}}
+<h1>Nuevo pedido</h1>
+
+<script type="text/javascript">
+var la_orden = "{{=orden.id}}";
+
+function actualizarTotal(){
+$.ajax({
+type: "GET",
+url: 'call/json/calcular_total',
+data: {orden: la_orden},
+success: totalCallback
+});
+}
+
+function totalCallback(data, status){
+if (data == null){data = "---";}
+$("#total").text(data);
+
+}
+
+function agregarItem(tipo, id, orden){
+var los_datos;
+// recuperar datos de registro
+if(tipo == 'pizza'){
+los_datos = jQuery('#tabla_pizzas').jqGrid('getRowData',id);
+}
+else if(tipo == 'empanada'){
+los_datos = jQuery('#tabla_empanadas').jqGrid('getRowData',id);
+}
+else if(tipo == 'bebida'){
+los_datos = jQuery('#tabla_bebidas').jqGrid('getRowData',id);
+}
+// agregar item via ajax
+$.ajax({
+type: "GET",
+url: 'call/json/agregar_item',
+data: {orden: la_orden, tipo: tipo, id: los_datos.id},
+success: agregarCallback
+});
+
+// actualizar la tabla de la órden
+
+}
+
+function agregarCallback(data, status){
+$("#tabla_orden").trigger("reloadGrid");
+actualizarTotal(); 
+}
+
+var lastsel_bebidas;
+$(document).ready(function(){
+$( "#tabs" ).tabs();
+jQuery("#tabla_pizzas").jqGrid({ url: 'call/json/pizzas', datatype: "json", colNames:['ID','Nombre', 'Precio'], colModel:[ {name:'id', index:'id', width:55}, {name:'nombre',index:'nombre', width:90}, {name:'precio',index:'precio', width:100}], rowNum:10, rowList:[10,20,30], pager: '#pager', sortname: 'ID', viewrecords: true, sortorder: "desc", caption:"Pizzas", onSelectRow: function(id){agregarItem('pizza', id, la_orden);} }); jQuery("#tabla_pizzas").jqGrid('navGrid','#pager',{edit:false,add:false,del:false});
+
+jQuery("#tabla_empanadas").jqGrid({ url: 'call/json/empanadas', datatype: "json", colNames:['ID','Nombre', 'Precio'], colModel:[ {name:'id',index:'id', width:55}, {name:'nombre',index:'nombre', width:90}, {name:'precio',index:'precio', width:100}], rowNum:10, rowList:[10,20,30], pager: '#pager2', sortname: 'ID', viewrecords: true, sortorder: "desc", caption:"Empanadas" , onSelectRow: function(id){agregarItem('empanada', id, la_orden);}}); jQuery("#tabla_empanadas").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false});
+
+jQuery("#tabla_bebidas").jqGrid({ url: 'call/json/bebidas', datatype: "json", colNames:['ID', 'Nombre', 'Precio'], colModel:[ {name:'id',index:'id', width:55}, {name:'nombre',index:'nombre', width:90}, {name:'precio',index:'precio', width:100}], rowNum:10, rowList:[10,20,30], pager: '#pager3', sortname: 'ID', viewrecords: true, sortorder: "desc", caption:"Bebidas", onSelectRow: function(id){agregarItem('bebida', id, la_orden);} }); jQuery("#tabla_bebidas").jqGrid('navGrid','#pager3',{edit:false,add:false,del:false});
+
+jQuery("#tabla_orden").jqGrid({ url: 'call/json/orden?orden={{=orden.id}}', datatype: "json", colNames:['ID','Producto',  'Orden', 'Nombre','ID Producto', 'Cantidad', 'Precio'], colModel:[ {name:'id',index:'id', width:55}, {name:'producto',index:'producto', width:55}, {name:'orden',index:'orden', width:55}, {name:'nombre',index:'nombre', width:90},{name:'id_producto',index:'id_producto', width:100}, {name:'cantidad',index:'cantidad', width:100, editable: true}, {name: 'precio', index: 'precio', width:55}], rowNum:10, rowList:[10,20,30], pager: '#pager4', sortname: 'ID', viewrecords: true, sortorder: "desc", caption:"Detalle de órden " + '{{=orden.id}}', editurl: 'call/json/editar_orden' , loadComplete: actualizarTotal
+ }); jQuery("#tabla_orden").jqGrid('navGrid','#pager4',{edit:true,add:false,del:true});
+})
+
+</script>
+
+<div id="tabs" style="width: 300px; float: left;">
+    <ul>
+        <li><a href="#tabs-1">Pizzas</a></li>
+        <li><a href="#tabs-2">Empanadas</a></li>
+        <li><a href="#tabs-3">Bebidas</a></li>
+    </ul>
+    <div id="tabs-1">
+        <table id="tabla_pizzas"></table> 
+        <div id="pager"></div>
+    </div>
+    
+    <div id="tabs-2">
+        <table id="tabla_empanadas"></table> 
+        <div id="pager2"></div>
+    </div>
+
+    <div id="tabs-3">
+        <table id="tabla_bebidas"></table> 
+        <div id="pager3"></div>
+    </div>
+</div>
+
+    <div id="caja_detalle" style="float: left; margin-left: 20px;">
+        <table id="tabla_orden"></table> 
+        <div id="pager4"></div>
+    </div>
+
+    <div class="endlp_caja" style="width: 470px;">
+        <h3>Resumen</h3>
+        <table>
+        <tr>
+        <td>Pedido nro:</td><td> {{=orden.id}}</td>
+        </tr>
+        <tr>
+        <td>Cliente:</td><td> {{=cliente.nombre}}</td>
+        </tr>
+        <tr>
+        <td>A entregar en:</td><td> {{=cliente.direccion}}</td>
+        </tr>
+        <tr>
+        <td>Son pesos </td><td><span  id="total">---</span></td>
+        </tr>
+        </table>
+        <br />
+        {{=form}}
+        </ul>
+    </div>

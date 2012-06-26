@@ -1,0 +1,42 @@
+{{extend 'layout.html'}}
+
+<h1>Datos de envío</h1>
+
+<div id="tabs" style="height: 25em;">
+    <ul>
+        <li>Envío número: {{=orden}}<a href="#tabs-1"></a></li>
+    </ul>
+
+    <div id="tabs-1">
+        <div class="endlp_caja">
+            <span class="endlp_cuadro">
+            <h3>Resumen</h3>
+            <ul>
+                <li>Pedido nro: {{=orden}}</li>
+                <li>Importe: ${{='%.2f' % total}}</li>
+                <li>Hora de entrega: {{=hora_entrega.hour}}:{{=hora_entrega.minute}}</li>
+                <li>Cliente: {{=cliente.nombre}}</li>
+                <li>Lugar: {{=cliente.direccion}}</li>
+            </ul>
+            </span>
+            <span class="endlp_cuadro">
+            <h3>Cadete</h3>
+            <ul>
+                <li>Nombre: {{=cadete.nombre}}</li>
+                <li>DNI: {{=cadete.documento}}</li>
+            </ul>
+            </span>
+            <span class="endlp_cuadro">
+                <img src="{{=URL('download', args=cadete.foto)}}"/>
+            </span>    
+        </div>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+$("#tabs").tabs();
+});
+</script>
